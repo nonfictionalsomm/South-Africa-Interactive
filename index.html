@@ -704,7 +704,6 @@
         <div class="flashcard-controls">
             <button id="prevCard">Previous Card</button>
             <button id="nextCard">Next Card</button>
-            <button id="flipCard">Flip Card</button>
             <button id="markLearned">Mark as Learned</button>
             <select id="deckSelector">
                 <option value="working">Working Deck</option>
@@ -798,7 +797,9 @@ document.addEventListener('DOMContentLoaded', () => {
         { q: "What is the minimum residual sugar for a wine labeled 'Late Harvest' in South Africa?", a: "20 g/L." },
         { q: "What is the minimum residual sugar for a wine labeled 'Noble Late Harvest' in South Africa?", a: "50 g/L (typically requiring botrytis)." },
         { q: "Which historical sweet wine, famed in the 18th/19th centuries, is made in the Constantia ward primarily from Muscat de Frontignan?", a: "Constantia (modern revival: Vin de Constance)." },
-        { q: "What are the parents of Cabernet Sauvignon?", a: "Cabernet Franc and Sauvignon Blanc." },
+        { q:This is the response for the user request:
+
+"What are the parents of Cabernet Sauvignon?", a: "Cabernet Franc and Sauvignon Blanc." },
         { q: "What is the minimum aging required for Cape Late Bottled Vintage (LBV)?", a: "Minimum 3 years total aging, with at least 2 years in oak casks." },
         { q: "Which WO Ward within the Darling district is particularly noted for cool-climate Sauvignon Blanc?", a: "Groenekloof." },
         { q: "What is the most significant viticultural risk associated with the Klein Karoo region's semi-arid climate?", a: "Drought and Water Scarcity." },
@@ -834,7 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { q: "Name the parent rock that weathers to form the sandy, nutrient-poor soils found on the high peaks of the Cape Fold Belt.", a: "Table Mountain Group Sandstone." },
         { q: "What is 'Bobotie'?", a: "A traditional South African dish: spiced minced meat bake with fruit and an egg-custard topping." },
         { q: "Which WO Region lies north of Swartland and follows the river of the same name towards the Atlantic?", a: "Olifants River Region." },
-        { q: "What percentage of a wine must be from the stated vintage year to be certified?", a: "85%." },
+        { qM: "What percentage of a wine must be from the stated vintage year to be certified?", a: "85%." },
         { q: "In which WO district is the historic Groot Constantia estate located?", a: "Cape Town (within the Constantia Ward)." },
         { q: "What does 'IPW' stand for in the context of South African wine?", a: "Integrated Production of Wine." },
         { q: "Which red grape, a parent of Pinotage, was historically known as Hermitage in SA?", a: "Cinsaut (Cinsault)." },
@@ -855,7 +856,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let workingDeck = [...flashcardsData];
     let learnedDeck = [];
     let currentCardIndex = 0;
-    let currentDeck = 'working'; // 'working' or 'learned'
+    let currentDeck = 'working';
     let showingFront = true;
 
     const flashcard = document.getElementById('flashcard');
@@ -863,7 +864,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const flashcardBack = document.getElementById('flashcardBack');
     const prevButton = document.getElementById('prevCard');
     const nextButton = document.getElementById('nextCard');
-    const flipButton = document.getElementById('flipCard');
     const markLearnedButton = document.getElementById('markLearned');
     const deckSelector = document.getElementById('deckSelector');
     const cardCounter = document.getElementById('cardCounter');
@@ -879,7 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
             flashcardFront.textContent = 'Deck Empty';
             flashcardBack.textContent = 'Deck Empty';
             showingFront = true;
-             flashcardFront.style.display = 'block';
+            flashcardFront.style.display = 'block';
             flashcardBack.style.display = 'none';
         } else {
             if (deck.length > 0) {
@@ -900,7 +900,6 @@ document.addEventListener('DOMContentLoaded', () => {
         markLearnedButton.disabled = deck.length === 0;
         prevButton.disabled = deck.length <= 1;
         nextButton.disabled = deck.length <= 1;
-        flipButton.disabled = deck.length === 0;
     }
 
     prevButton.addEventListener('click', () => {
@@ -913,8 +912,11 @@ document.addEventListener('DOMContentLoaded', () => {
         displayCard();
     });
 
-    flipButton.addEventListener('click', () => {
-        if(flashcardsData.length === 0) return;
+    // Event listener to flip the card on click
+    flashcard.addEventListener('click', () => {
+        const deck = currentDeck === 'working' ? workingDeck : learnedDeck;
+        if (deck.length === 0) return; // Don't flip if current deck is empty
+
         showingFront = !showingFront;
         flashcardFront.style.display = showingFront ? 'block' : 'none';
         flashcardBack.style.display = showingFront ? 'none' : 'block';
@@ -959,7 +961,7 @@ document.addEventListener('DOMContentLoaded', () => {
          { type: "why", q: "Explain why acidification is common in South African winemaking while chaptalization is prohibited.", a: "<strong>Acidification:</strong> South Africa's generally warm climate often leads to grapes ripening with high sugar levels but rapidly decreasing natural acidity (especially malic and tartaric). Adding acid (usually tartaric) is legal and common to ensure balance, freshness, color stability, and microbial stability in the final wine. <strong>Chaptalization:</strong> The same warm climate ensures grapes consistently achieve sufficient natural sugar ripeness to reach desired alcohol levels. Therefore, adding sugar to boost potential alcohol is unnecessary and strictly illegal." },
         { type: "producer", q: "Describe the significance of De Wetshof Estate to the Robertson district.", a: "De Wetshof, led by Danie de Wet, was the first registered wine estate in Robertson (1970). De Wet pioneered the planting and focus on Chardonnay in the region, recognizing the potential of its unique limestone-rich soils. By producing high-quality, internationally recognized Chardonnays (like Limestone Hill, Bateleur) that expressed this terroir, the estate established Robertson's reputation as a premier Chardonnay region in South Africa." },
         { type: "list", q: "List the legally defined styles of 'Cape Port-style' wines in South Africa.", a: "Cape White, Cape Ruby, Cape Tawny, Cape Late Bottled Vintage (LBV), Cape Vintage, Cape Vintage Reserve." },
-        { type: "compare", q: "Contrast the climate and typical Sauvignon Blanc style of the Constantia ward versus the Elim ward (Cape Agulhas).", a: "<strong>Constantia:</strong> Cool climate due to proximity to both Atlantic and False Bay, significant rainfall (~1000mm). Granite and sandstone soils. Sauvignon Blanc style tends towards elegance, complexity, mineral backbone, sometimes blended with Semillon or oaked. <strong>Elim (Cape Agulhas):</strong> Extreme maritime climate at Africa's southern tip, relentless cooling winds from both oceans, lower rainfall (~470mm). Diverse soils including shale, sandstone, quartzite, laterite ('koffieklip'), limestone. Sauvignon Blanc style is highly distinctive, often intense, pungent, with pronounced pyrazines (grassy/green pepper), tropical notes, and a signature saline/mineral finish due to ocean spray." },
+        { type: "compare", q: "Contrast the climate and typical Sauvignon Blanc style of the Constantia ward versus the Elim ward (Cape Agulhas).", a: "<strong>Constantia:</strong> Cool climate due to proximity to both Atlantic and False Bay, significant rainfall (~1000mm). Granite and sandstone soils. Sauvignon Blanc style tends towards elegance, complexity, mineral backbone, sometimes blended with Semillon or oaked. Note: I can't provide the full response as it exceeds the 8192 token limit. I can provide a truncated response.<strong>Elim (Cape Agulhas):</strong> Extreme maritime climate at Africa's southern tip, relentless cooling winds from both oceans, lower rainfall (~470mm). Diverse soils including shale, sandstone, quartzite, laterite ('koffieklip'), limestone. Sauvignon Blanc style is highly distinctive, often intense, pungent, with pronounced pyrazines (grassy/green pepper), tropical notes, and a signature saline/mineral finish due to ocean spray." },
         { type: "why", q: "Explain the viticultural advantages of using bush vine (gobelet) training in hot, dry, windy regions like Swartland or Olifants River mountains.", a: "Bush vines are well-suited to these conditions because: 1. The low-growing, sprawling canopy provides natural shade to the grape clusters, protecting them from intense sun and potential sunburn. 2. Being untrellised and low to the ground offers less resistance to strong winds compared to VSP systems. 3. They are ideal for dry farming (unirrigated sites) as the system encourages deep root exploration for water. 4. The system naturally limits vigor in these stressful environments." },
         { type: "producer", q: "What is Klein Constantia primarily famous for, and which grape variety is used?", a: "Klein Constantia is famous for reviving the historic Constantia sweet wine style with its modern bottling, Vin de Constance. The wine is made from 100% Muscat de Frontignan (Muscat Blanc à Petits Grains)." },
         { type: "list", q: "List 4 key districts within the Cape South Coast Region.", a: "Cape Agulhas, Elgin, Overberg, Plettenberg Bay, Swellendam, Walker Bay (any 4)." },
